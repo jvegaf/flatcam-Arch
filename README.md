@@ -82,7 +82,7 @@ python --version
 pip --version
 ``` 
 
-If it is not installed, install it. In Ubuntu-like OS's it is done like this: 
+If it is not installed, install it. In Arrch-like OS's it is done like this: 
 ```
 sudo pacman -S python python-pip 
 ```

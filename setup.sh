@@ -1,20 +1,30 @@
-#!/bin/sh -e
+#!/bin/sh
 # ###############################
 # Arch Linux packages
 
-sudo pacman -S python python-pip
+# Save current directory
+START_DIR=$(pwd)
+
+# Move to home directory
+cd ~
+
+# Install system dependencies
+sudo pacman -S --needed python python-pip python-virtualenv python-pipenv
 
 # ###############################
 # Setup Python venv
 
-python -m  venv venv; 
+if [ ! -d "venv" ]; then
+    python -m venv venv
+fi
 
-
+# Activate venv
+source ~/venv/bin/activate
 
 # ################################
 # Python packages
 
-sudo -H python3 -m pip install --upgrade\
+pip install --upgrade \
 	pip \
 	numpy \
 	shapely \
@@ -45,5 +55,20 @@ sudo -H python3 -m pip install --upgrade\
 	pyqtdarktheme \
 	darkdetect \
 	svgtrace
-# OR-TOOLS package is now optional
+
 # ################################
+# Auto-activate venv on startup
+
+VENV_ACTIVATION="source ~/venv/bin/activate"
+BASHRC="$HOME/.bashrc"
+
+if ! grep -Fxq "$VENV_ACTIVATION" "$BASHRC"; then
+    echo "$VENV_ACTIVATION" >> "$BASHRC"
+    echo "Virtual environment will be activated on every new shell session."
+fi
+
+# Return to the original directory
+cd "$START_DIR"
+
+echo "Setup complete. Virtual environment activated."
+
