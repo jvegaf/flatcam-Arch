@@ -3,7 +3,7 @@
 # ################################
 # Python packages
 
-sudo -H python3 -m pip install --upgrade break-system-packages\
+sudo -H python3 -m pip install --upgrade --break-system-packages\
 	pip \
 	numpy \
 	shapely \
