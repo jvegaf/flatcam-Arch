@@ -1,9 +1,20 @@
 #!/bin/sh -e
+# ###############################
+# Arch Linux packages
+
+sudo pacman -S python python-pip
+
+# ###############################
+# Setup Python venv
+
+python -m  venv venv; 
+
+
 
 # ################################
 # Python packages
 
-sudo -H python3 -m pip install --upgrade --break-system-packages\
+sudo -H python3 -m pip install --upgrade\
 	pip \
 	numpy \
 	shapely \
