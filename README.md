@@ -79,7 +79,7 @@ python --version
 ```
 - verify that the pip package is installed for your Python installation (e.g 25.0.1) by running the command:
 ```
-pip3 --version
+pip --version
 ``` 
 
 If it is not installed, install it. In Ubuntu-like OS's it is done like this: 
@@ -88,11 +88,11 @@ sudo pacman -S python python-pip
 ```
 
 
-- verify that the file setup_ubuntu.sh has Linux line-endings (LF) and that it is executable (chmod +x setup_ubuntu.sh)
-- run the file setup_ubuntu.sh and install all the dependencies with the command:
+- Make the setup.sh executable and run it
 ```
-./setup.sh
+chmod +x setup.sh; ./setup.sh
 ```
+
 - if the previous command is successful and has no errors, run FlatCAM with the command: python FlatCAM.py
 
 - Alternatively you can install it on Ubuntu with:
