@@ -88,14 +88,14 @@ sudo pacman -S python python-pip
 ```
 
 
-- Make the setup.sh executable and run it
+- Make the setup.sh executable and run it:
 ```
 chmod +x setup.sh; ./setup.sh
 ```
 
 - if the previous command is successful and has no errors, run FlatCAM with the command: python FlatCAM.py
 
-- Alternatively you can install it on Ubuntu with:
+- Alternatively you can install it on Arch with:
 ```
 # Optional if depencencies are missing
 make install_dependencies
