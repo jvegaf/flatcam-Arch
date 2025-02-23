@@ -1,5 +1,6 @@
 FlatCAM Evo (c) 2019 - by Marius Stanciu
-Edited - by Aleander Grigorov
+
+Edited - by Alexander Grigorov
 
 Based on FlatCAM: 
 2D Computer-Aided PCB Manufacturing by (c) 2014-2018 Juan Pablo Caram
