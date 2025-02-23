@@ -1,4 +1,5 @@
 FlatCAM Evo (c) 2019 - by Marius Stanciu
+Edited - by Aleander Grigorov
 
 Based on FlatCAM: 
 2D Computer-Aided PCB Manufacturing by (c) 2014-2018 Juan Pablo Caram
@@ -12,16 +13,14 @@ CAD program, and create G-Code for Isolation routing.
 
 -------------------------- Installation instructions ----------------
 
-Works with Python version 3.6 or greater and PyQt6.
-More on the YouTube channel: 
-https://www.youtube.com/playlist?list=PLVvP2SYRpx-AQgNlfoxw93tXUXon7G94_
+Works with Python version 3.13 and PyQt6.
 
-You can contact me on my email address found in the app in:
-Menu -> Help -> About FlatCAM -> Programmers -> Marius Stanciu
 
 - Make sure that your OS is up-to-date
-- Download sources from: https://bitbucket.org/jpcgt/flatcam/downloads/
-- Unzip them on an HDD location that your user has permissions for.
+- Clone the repo
+``` 
+git clone https://github.com/Mr-TopG/flatcam-Arch.git
+```
 
 **************************************************************************
 1.Windows
@@ -72,36 +71,29 @@ python FlatCAM.py
 **************************************************************************
 2.Linux
 **************************************************************************
-- create a folder to hold the sources somewhere on your HDD:
-mkdir FlatCAM-beta
 
-- unzip in this folder the sources downloaded from https://bitbucket.org/jpcgt/flatcam/downloads/
-Using commands (e.g using the sources for FlatCAM beta 8.995):
-cd ~/FlatCAM-beta
-wget https://bitbucket.org/jpcgt/flatcam/downloads/FlatCAM_beta_8.995_sources.zip
-unzip FlatCAM_beta_8.995_sources.zip
-cd FlatCAM_beta_8.995_sources
 
-- make sure that Python 3.9 is installed on your OS and that the command: python3 -V confirm it
-- verify that the pip package is installed for your Python installation (e.g 3.9) by running the command:
+- make sure that Python 3.13 is installed on your OS: 
 ```
-pip3 -V
+python --version
+```
+- verify that the pip package is installed for your Python installation (e.g 25.0.1) by running the command:
+```
+pip3 --version
 ``` 
 
 If it is not installed, install it. In Ubuntu-like OS's it is done like this: 
 ```
-sudo apt-get install python3-pip 
+sudo pacman -S python python-pip 
 ```
-or:
-```
-sudo apt-get install python3.9-pip
-```
+
+
 - verify that the file setup_ubuntu.sh has Linux line-endings (LF) and that it is executable (chmod +x setup_ubuntu.sh)
 - run the file setup_ubuntu.sh and install all the dependencies with the command:
 ```
-./setup_ubuntu.sh
+./setup.sh
 ```
-- if the previous command is successful and has no errors, run FlatCAM with the command: python3 FlatCAM.py
+- if the previous command is successful and has no errors, run FlatCAM with the command: python FlatCAM.py
 
 - Alternatively you can install it on Ubuntu with:
 ```
