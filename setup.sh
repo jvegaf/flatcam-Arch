@@ -1,27 +1,9 @@
 #!/bin/sh -e
 
-# Ubuntu packages
-
-sudo apt-get install -y \
-	libfreetype6 \
-	libfreetype6-dev \
-	libgeos-dev \
-	libpng-dev \
-	libspatialindex-dev \
-	qt5-style-plugins \
-	python3-dev \
-	python3-gdal \
-	python3-pip \
-	python3-pyqt6 \
-	python3-pyqt6.qtopengl \
-	python3-simplejson \
-	python3-tk
-
-
 # ################################
 # Python packages
 
-sudo -H python3 -m pip install --upgrade \
+sudo -H python3 -m pip install --upgrade break-system-packages\
 	pip \
 	numpy \
 	shapely \

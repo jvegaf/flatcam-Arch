@@ -1,9 +1,10 @@
 
-# Install on Ubuntu(-like) systems
+# Install on Arch linux systems
 
 # Install dependencies system-wide (including python modules)
+# Note that this may break your system
 install_dependencies:
-	sudo -H ./setup_ubuntu.sh
+	sudo -H ./setup.sh
 
 USER_ID = $(shell id -u)
 
@@ -14,7 +15,7 @@ ASSEST_PATH = assets/linux
 INSTALL_PATH = /usr/share/flatcam-beta
 APPS_PATH = /usr/share/applications
 
-MIN_PY3_MINOR_VERSION := 6
+MIN_PY3_MINOR_VERSION := 13
 PY3_MINOR_VERSION := $(shell python3 --version | cut -d'.' -f2)
 
 ifneq ($(MIN_PY3_MINOR_VERSION), $(firstword $(sort $(PY3_MINOR_VERSION) $(MIN_PY3_MINOR_VERSION))))
