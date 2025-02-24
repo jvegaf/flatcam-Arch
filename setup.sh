@@ -58,15 +58,25 @@ pip install --upgrade \
 	simplejson
 
 # ################################
-# Auto-activate venv on startup
+# Auto-activate venv
 
-VENV_ACTIVATION="source ~/venv/bin/activate"
 BASHRC="$HOME/.bashrc"
+PYTHON_FUNCTION='
+python() {
+    if [ -z "$VIRTUAL_ENV" ]; then
+        source ~/venv/bin/activate
+    fi
+    command python "$@"
+}'
 
-if ! grep -Fxq "$VENV_ACTIVATION" "$BASHRC"; then
-    echo "$VENV_ACTIVATION" >> "$BASHRC"
-    echo "Virtual environment will be activated on every new shell session."
+if ! grep -q "python() {" "$BASHRC"; then
+    echo "$PYTHON_FUNCTION" >> "$BASHRC"
+    echo "Added auto-activation for Python."
 fi
+
+# Reload shell configuration
+echo "Reloading shell configuration..."
+source "$BASHRC"
 
 # Return to the original directory
 cd "$START_DIR"
