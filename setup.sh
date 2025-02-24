@@ -54,7 +54,8 @@ pip install --upgrade \
 	ortools \
 	pyqtdarktheme \
 	darkdetect \
-	svgtrace
+	svgtrace \
+	simplejson
 
 # ################################
 # Auto-activate venv on startup
