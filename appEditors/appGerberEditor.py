@@ -1299,7 +1299,7 @@ class RegionEditorGrb(ShapeToolEditorGrb):
             if len(self.temp_points) > 1:
                 try:
                     geo_sol = LineString(self.temp_points)
-                    geo_sol = geo_sol.buffer(self.buf_val, int(self.steps_per_circle), join_style=1)
+                    geo_sol = geo_sol.buffer(self.buf_val, int(self.steps_per_circle), join_style="round")
                     new_geo_el = {
                         'solid': geo_sol
                     }
@@ -1395,7 +1395,7 @@ class RegionEditorGrb(ShapeToolEditorGrb):
 
             # create the geometry
             geo_line = LinearRing(self.temp_points)
-            geo_sol = geo_line.buffer(self.buf_val, int(self.steps_per_circle), join_style=1)
+            geo_sol = geo_line.buffer(self.buf_val, int(self.steps_per_circle), join_style="round")
             new_geo_el = {
                 'solid': geo_sol,
                 'follow': geo_line
@@ -1410,7 +1410,7 @@ class RegionEditorGrb(ShapeToolEditorGrb):
         if len(self.points) > 2:
 
             new_geo_el = {
-                'solid': Polygon(self.points).buffer(self.buf_val, int(self.steps_per_circle), join_style=2),
+                'solid': Polygon(self.points).buffer(self.buf_val, int(self.steps_per_circle), join_style="mitre"),
                 'follow': Polygon(self.points).exterior
             }
 
@@ -4624,11 +4624,11 @@ class AppGerberEditor(QtCore.QObject):
                         if isinstance(g_data['follow'], Point):
                             new_geo_el['solid'] = deepcopy(g_data['solid'].buffer(adjust_size))
                         else:
-                            new_geo_el['solid'] = deepcopy(g_data['solid'].buffer(adjust_size, join_style=2))
+                            new_geo_el['solid'] = deepcopy(g_data['solid'].buffer(adjust_size, join_style="mitre"))
                 if 'follow' in g_data:
                     new_geo_el['follow'] = deepcopy(g_data['follow'])
                 if 'clear' in g_data:
-                    new_geo_el['clear'] = deepcopy(g_data['clear'].buffer(adjust_size, join_style=2))
+                    new_geo_el['clear'] = deepcopy(g_data['clear'].buffer(adjust_size, join_style="mitre"))
                 geometry.append(DrawToolShape(new_geo_el))
 
             self.storage_dict[ap_code_old]['geometry'].clear()
@@ -4678,7 +4678,7 @@ class AppGerberEditor(QtCore.QObject):
                                 geo = box(xmin=minx, ymin=miny, xmax=maxx, ymax=maxy)
                                 new_geo_el['clear'] = deepcopy(geo)
                             else:
-                                new_geo_el['clear'] = deepcopy(g_data['clear'].buffer(buff_val_lines, join_style=2))
+                                new_geo_el['clear'] = deepcopy(g_data['clear'].buffer(buff_val_lines, join_style="mitre"))
                     geometry.append(DrawToolShape(new_geo_el))
 
                 self.storage_dict[ap_code_old]['geometry'].clear()
@@ -5405,6 +5405,11 @@ class AppGerberEditor(QtCore.QObject):
         else:
             new_grb_name = self.edited_obj_name + "_edit"
 
+        def deactivate_grb_editor_signal_handler():
+            self.deactivate_grb_editor()
+
+        self.app.connect_custom_signal(deactivate_grb_editor_signal_handler, object)
+
         self.app.worker_task.emit({'fcn': self.new_edited_gerber, 'params': [new_grb_name, self.storage_dict]})
         # self.new_edited_gerber(new_grb_name, self.storage_dict)
 
@@ -5533,7 +5538,7 @@ class AppGerberEditor(QtCore.QObject):
 
             # make sure to clean the previous results
             self.results = []
-            self.deactivate_grb_editor()
+            self.app.custom_signal.emit(None)
             self.app.inform.emit('[success] %s' % _("Done."))
 
     def on_tool_select(self, tool):
@@ -7627,13 +7632,13 @@ class TransformEditorTool(AppTool):
 
     def on_buffer_by_distance(self):
         value = self.buffer_entry.get_value()
-        join = 1 if self.buffer_rounded_cb.get_value() else 2
+        join = "round" if self.buffer_rounded_cb.get_value() else "mitre"
 
         self.app.worker_task.emit({'fcn': self.on_buffer_action, 'params': [value, join]})
 
     def on_buffer_by_factor(self):
         value = 1 + (self.buffer_factor_entry.get_value() / 100.0)
-        join = 1 if self.buffer_rounded_cb.get_value() else 2
+        join = "round" if self.buffer_rounded_cb.get_value() else "mitre"
 
         # tell the buffer method to use the factor
         factor = True
@@ -7965,10 +7970,10 @@ class TransformEditorTool(AppTool):
         """
 
         def bounds_rec(lst):
-            minx = np.Inf
-            miny = np.Inf
-            maxx = -np.Inf
-            maxy = -np.Inf
+            minx = np.inf
+            miny = np.inf
+            maxx = -np.inf
+            maxy = -np.inf
 
             try:
                 for shape in lst:
@@ -7988,10 +7993,10 @@ class TransformEditorTool(AppTool):
 
 
 def get_shapely_list_bounds(geometry_list):
-    xmin = np.Inf
-    ymin = np.Inf
-    xmax = -np.Inf
-    ymax = -np.Inf
+    xmin = np.inf
+    ymin = np.inf
+    xmax = -np.inf
+    ymax = -np.inf
 
     for gs in geometry_list:
         try:

@@ -1764,7 +1764,7 @@ class AppGeoEditor(QtCore.QObject):
         """
 
         snap_x, snap_y = (x, y)
-        snap_distance = np.Inf
+        snap_distance = np.inf
 
         # # ## Object (corner?) snap
         # # ## No need for the objects, just the coordinates
@@ -1921,6 +1921,11 @@ class AppGeoEditor(QtCore.QObject):
         :return:            None
         """
 
+        def deactivate_signal_handler():
+            self.deactivate()
+
+        self.app.connect_custom_signal(deactivate_signal_handler, object)
+
         def worker_job(editor_obj):
             # Link shapes into editor.
             with editor_obj.app.proc_container.new(_("Working...")):
@@ -1971,7 +1976,7 @@ class AppGeoEditor(QtCore.QObject):
                 except Exception:
                     pass
 
-                self.deactivate()
+                self.app.custom_signal.emit(None)
                 editor_obj.app.inform.emit(_("Editor Exit. Geometry object was updated ..."))
 
         self.app.worker_task.emit({'fcn': worker_job, 'params': [self]})
@@ -2659,10 +2664,10 @@ class DrawToolShape(object):
 
         def bounds_rec(shape_el):
             if type(shape_el) is list:
-                minx = np.Inf
-                miny = np.Inf
-                maxx = -np.Inf
-                maxy = -np.Inf
+                minx = np.inf
+                miny = np.inf
+                maxx = -np.inf
+                maxy = -np.inf
 
                 for k in shape_el:
                     minx_, miny_, maxx_, maxy_ = bounds_rec(k)
@@ -2932,10 +2937,10 @@ class DrawTool(object):
     def bounds(obj):
         def bounds_rec(o):
             if type(o) is list:
-                minx = np.Inf
-                miny = np.Inf
-                maxx = -np.Inf
-                maxy = -np.Inf
+                minx = np.inf
+                miny = np.inf
+                maxx = -np.inf
+                maxy = -np.inf
 
                 for k in o:
                     try:
@@ -5081,10 +5086,10 @@ class FCCopy(FCShapeTool):
         geo_source = [s.geo for s in self.draw_app.get_selected()]
 
         def geo_bounds(geo: (BaseGeometry, list)):
-            minx = np.Inf
-            miny = np.Inf
-            maxx = -np.Inf
-            maxy = -np.Inf
+            minx = np.inf
+            miny = np.inf
+            maxx = -np.inf
+            maxy = -np.inf
 
             if type(geo) == list:
                 for shp in geo:
@@ -5492,8 +5497,8 @@ class FCBuffer(FCShapeTool):
                                      _("Buffer distance value is missing or wrong format. Add it and retry."))
                 return
         # the cb index start from 0 but the join styles for the buffer start from 1 therefore the adjustment
-        # I populated the combobox such that the index coincide with the join styles value (whcih is really an INT)
-        join_style = self.buff_tool.ui.buffer_corner_cb.currentIndex() + 1
+        # I populated the combobox such that the index coincide with the join styles value
+        join_style = {1: 'round', 2: 'mitre', 3: 'bevel'}.get(self.buff_tool.ui.buffer_corner_cb.currentIndex() + 1)
         ret_val = self.buff_tool.buffer(buffer_distance, join_style)
 
         self.deactivate()
@@ -5518,8 +5523,8 @@ class FCBuffer(FCShapeTool):
                                      _("Buffer distance value is missing or wrong format. Add it and retry."))
                 return
         # the cb index start from 0 but the join styles for the buffer start from 1 therefore the adjustment
-        # I populated the combobox such that the index coincide with the join styles value (whcih is really an INT)
-        join_style = self.buff_tool.ui.buffer_corner_cb.currentIndex() + 1
+        # I populated the combobox such that the index coincide with the join styles value
+        join_style = {1: 'round', 2: 'mitre', 3: 'bevel'}.get(self.buff_tool.ui.buffer_corner_cb.currentIndex() + 1)
         ret_val = self.buff_tool.buffer_int(buffer_distance, join_style)
 
         self.deactivate()
@@ -5544,8 +5549,8 @@ class FCBuffer(FCShapeTool):
                                               _("Buffer distance value is missing or wrong format. Add it and retry."))
                 return
         # the cb index start from 0 but the join styles for the buffer start from 1 therefore the adjustment
-        # I populated the combobox such that the index coincide with the join styles value (whcih is really an INT)
-        join_style = self.buff_tool.ui.buffer_corner_cb.currentIndex() + 1
+        # I populated the combobox such that the index coincide with the join styles value
+        join_style = {1: 'round', 2: 'mitre', 3: 'bevel'}.get(self.buff_tool.ui.buffer_corner_cb.currentIndex() + 1)
         ret_val = self.buff_tool.buffer_ext(buffer_distance, join_style)
         # self.app.ui.notebook.setTabText(2, _("Tools"))
         # self.draw_app.app.ui.splitter.setSizes([0, 1])
@@ -5780,10 +5785,10 @@ def poly2rings(poly):
 
 
 def get_shapely_list_bounds(geometry_list):
-    xmin = np.Inf
-    ymin = np.Inf
-    xmax = -np.Inf
-    ymax = -np.Inf
+    xmin = np.inf
+    ymin = np.inf
+    xmax = -np.inf
+    ymax = -np.inf
 
     for gs in geometry_list:
         try:

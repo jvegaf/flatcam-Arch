@@ -194,7 +194,7 @@ class Gerber(Geometry):
         # optional coordinates but at least one in any order.
         self.circ_re = re.compile(
             r'^(?:G0?([23]))?(?=.*X([+-]?\d+))?(?=.*Y([+-]?\d+))' +
-            '?(?=.*I([+-]?\d+))?(?=.*J([+-]?\d+))?[XYIJ][^D]*(?:D0([12]))?\*$'
+            r'?(?=.*I([+-]?\d+))?(?=.*J([+-]?\d+))?[XYIJ][^D]*(?:D0([12]))?\*$'
         )
 
         # G01/2/3 Occurring without coordinates
@@ -1919,10 +1919,10 @@ class Gerber(Geometry):
 
         def bounds_rec(obj):
             if type(obj) is list and type(obj) is not MultiPolygon:
-                minx = np.Inf
-                miny = np.Inf
-                maxx = -np.Inf
-                maxy = -np.Inf
+                minx = np.inf
+                miny = np.inf
+                maxx = -np.inf
+                maxy = -np.inf
 
                 for k in obj:
                     if type(k) is dict:
@@ -2569,11 +2569,11 @@ class Gerber(Geometry):
         self.app.inform.emit('[success] %s' % _("Done."))
         self.app.proc_container.new_text = ''
 
-    def buffer(self, distance, join=2, factor=None, only_exterior=False):
+    def buffer(self, distance, join="mitre", factor=None, only_exterior=False, muted=False):
         """
 
         :param distance:        If 'factor' is True then distance is the factor
-        :param join:            The type of joining used by the Shapely buffer method. Can be: round, square and bevel
+        :param join:            The type of joining used by the Shapely buffer method. Can be: round, mitre and bevel
         :param factor:          True or False (None)
         :param only_exterior:   Bool. If True, the LineStrings are buffered only on the outside
         :return:                None
@@ -2718,8 +2718,8 @@ class Gerber(Geometry):
             self.solid_geometry = MultiPolygon(new_solid_geo)
             self.solid_geometry = self.solid_geometry.buffer(0.000001)
             self.solid_geometry = self.solid_geometry.buffer(-0.000001)
-
-        self.app.inform.emit('[success] %s' % _("Gerber Buffer done."))
+        if muted is False:
+            self.app.inform.emit('[success] %s' % _("Gerber Buffer done."))
         self.app.proc_container.new_text = ''
 
 

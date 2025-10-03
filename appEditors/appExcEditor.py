@@ -2703,10 +2703,10 @@ class CopyEditorExc(FCShapeTool):
         geo_source = [s.geo for s in self.draw_app.get_selected()]
 
         def geo_bounds(geo: (BaseGeometry, list)):
-            minx = np.Inf
-            miny = np.Inf
-            maxx = -np.Inf
-            maxy = -np.Inf
+            minx = np.inf
+            miny = np.inf
+            maxx = -np.inf
+            maxy = -np.inf
 
             if type(geo) == list:
                 for shp in geo:
@@ -4313,8 +4313,13 @@ class AppExcEditor(QtCore.QObject):
             else:
                 self.edited_obj_name += "_edit"
 
+        def deactivate_signal_handler(_):
+            self.deactivate()
+
+        self.app.connect_custom_signal(deactivate_signal_handler, object)
         self.app.worker_task.emit({'fcn': self.new_edited_excellon,
                                    'params': [self.edited_obj_name, self.new_tools]})
+
 
         return self.edited_obj_name
 
@@ -4380,7 +4385,7 @@ class AppExcEditor(QtCore.QObject):
                                                                              filename=None,
                                                                              use_thread=False)
             except Exception as e:
-                self.deactivate()
+                self.app.custom_signal.emit(None) # calls deactivate_signal_handler() on UI Thread
 
                 # make sure that we do not carry the reference of the edited object further along
                 self.edited_obj = None
@@ -4388,7 +4393,7 @@ class AppExcEditor(QtCore.QObject):
                 self.app.log.error("Error on Edited object creation: %s" % str(e))
                 return
 
-            self.deactivate()
+            self.app.custom_signal.emit(None)  # calls deactivate_signal_handler() on UI Thread
 
             # make sure that we do not carry the reference of the edited object further along
             self.edited_obj = None
@@ -5391,10 +5396,10 @@ class AppExcEditorUI:
 
 
 def get_shapely_list_bounds(geometry_list):
-    xmin = np.Inf
-    ymin = np.Inf
-    xmax = -np.Inf
-    ymax = -np.Inf
+    xmin = np.inf
+    ymin = np.inf
+    xmax = -np.inf
+    ymax = -np.inf
 
     for gs in geometry_list:
         try:

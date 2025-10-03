@@ -1126,10 +1126,10 @@ class Excellon(Geometry):
 
         def bounds_rec(obj):
             if type(obj) is list:
-                minx = np.Inf
-                miny = np.Inf
-                maxx = -np.Inf
-                maxy = -np.Inf
+                minx = np.inf
+                miny = np.inf
+                maxx = -np.inf
+                maxy = -np.inf
 
                 for k in obj:
                     if type(k) is dict:
@@ -1580,7 +1580,7 @@ class Excellon(Geometry):
         self.create_geometry()
         self.app.proc_container.new_text = ''
 
-    def buffer(self, distance, join, factor, only_exterior=False):
+    def buffer(self, distance, join, factor, only_exterior=False, muted=False):
         """
 
         :param distance:        if 'factor' is True then distance is the factor

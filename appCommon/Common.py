@@ -731,7 +731,7 @@ class ExclusionAreas(QtCore.QObject):
 
         for area in self.exclusion_areas_storage:
             new_area = deepcopy(area)
-            new_area['shape'] = area['shape'].buffer(buffered_distance, join_style=2)
+            new_area['shape'] = area['shape'].buffer(buffered_distance, join_style="mitre")
             buffered_storage.append(new_area)
 
         # sort the Exclusion areas from the closest to the start_point to the farthest
@@ -1034,7 +1034,7 @@ def nearest_point(origin, points_list):
     :return:            Nearest Point
     :rtype:             Point
     """
-    old_dist = np.Inf
+    old_dist = np.inf
     nearest_pt = None
 
     for pt in points_list:

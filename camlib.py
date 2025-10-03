@@ -271,7 +271,7 @@ class ApertureMacro:
         # pol, width, xs, ys, xe, ye, angle = ApertureMacro.default2zero(7, mods)
 
         line = LineString([(xs, ys), (xe, ye)])
-        box = line.buffer(width / 2, cap_style=2)
+        box = line.buffer(width / 2, cap_style="flat")
         box_rotated = affinity.rotate(box, angle, origin=(0, 0))
 
         return {"pol": int(pol), "geometry": box_rotated}
@@ -439,8 +439,8 @@ class ApertureMacro:
             i += 1
 
         # ## Crosshair
-        hor = LineString([(x - cross_len, y), (x + cross_len, y)]).buffer(cross_th / 2.0, cap_style=2)
-        ver = LineString([(x, y - cross_len), (x, y + cross_len)]).buffer(cross_th / 2.0, cap_style=2)
+        hor = LineString([(x - cross_len, y), (x + cross_len, y)]).buffer(cross_th / 2.0, cap_style="flat")
+        ver = LineString([(x, y - cross_len), (x, y + cross_len)]).buffer(cross_th / 2.0, cap_style="flat")
         result = unary_union([result, hor, ver])
 
         return {"pol": 1, "geometry": result}
@@ -466,8 +466,8 @@ class ApertureMacro:
         # angle = val[5]
 
         ring = Point((x, y)).buffer(dout / 2.0).difference(Point((x, y)).buffer(din / 2.0))
-        hline = LineString([(x - dout / 2.0, y), (x + dout / 2.0, y)]).buffer(t / 2.0, cap_style=3)
-        vline = LineString([(x, y - dout / 2.0), (x, y + dout / 2.0)]).buffer(t / 2.0, cap_style=3)
+        hline = LineString([(x - dout / 2.0, y), (x + dout / 2.0, y)]).buffer(t / 2.0, cap_style="square")
+        vline = LineString([(x, y - dout / 2.0), (x, y + dout / 2.0)]).buffer(t / 2.0, cap_style="square")
         thermal = ring.difference(hline.union(vline))
 
         return {"pol": 1, "geometry": thermal}
@@ -774,10 +774,10 @@ class Geometry(object):
 
         def bounds_rec(obj):
             if type(obj) is list:
-                gminx = np.Inf
-                gminy = np.Inf
-                gmaxx = -np.Inf
-                gmaxy = -np.Inf
+                gminx = np.inf
+                gminy = np.inf
+                gmaxx = -np.inf
+                gmaxy = -np.inf
 
                 for k in obj:
                     if type(k) is dict:
@@ -1134,7 +1134,7 @@ class Geometry(object):
 
         old_disp_number = 0
         pol_nr = 0
-        # yet, it can be done by issuing an unary_union in the end, thus getting rid of the overlapping geo
+        # yet, it can be done by issuing a unary_union in the end, thus getting rid of the overlapping geo
         for pol in working_geo_shp:
             if self.app.abort_flag:
                 # graceful abort requested by the user
@@ -1142,7 +1142,7 @@ class Geometry(object):
             if offset == 0:
                 temp_geo = pol
             else:
-                corner_type = 1 if corner is None else corner
+                corner_type = "round" if corner is None else corner
                 temp_geo = pol.buffer(offset, int(self.geo_steps_per_circle), join_style=corner_type)
 
             geo_iso.append(temp_geo)
@@ -2648,7 +2648,7 @@ class Geometry(object):
         """
 
         :param distance:        if 'factor' is True then distance is the scale factor for each geometric element
-        :param join:            The kind of join used by the shapely buffer method: round, square or bevel
+        :param join:            The kind of join used by the shapely buffer method: round, mitre or bevel
         :param factor:          True or False (None)
         :param only_exterior:   Bool. If True, the LineStrings are buffered only on the outside
         :param muted:           Bool. If True no messages are created.
@@ -3784,14 +3784,14 @@ class CNCjob(Geometry):
                 if isinstance(it, LineString):
                     if it.is_ring:
                         it = Polygon(it)
-                temp_solid_geometry.append(it.buffer(tool_offset, join_style=2))
+                temp_solid_geometry.append(it.buffer(tool_offset, join_style="mitre"))
 
             for it in flat_ints_geo:
                 # if the geometry is a closed shape then create a Polygon out of it
                 if isinstance(it, (LineString, LinearRing)):
                     if it.is_ring:
                         it = Polygon(it)
-                temp_solid_geometry.append(it.buffer(-tool_offset, join_style=2))
+                temp_solid_geometry.append(it.buffer(-tool_offset, join_style="mitre"))
 
             temp_solid_geometry = self.flatten(temp_solid_geometry, reset=True, pathonly=True)
         else:
@@ -4955,7 +4955,7 @@ class CNCjob(Geometry):
                     c = it.coords
                     if c[0] == c[-1]:
                         it = Polygon(it)
-                temp_solid_geometry.append(it.buffer(offset, join_style=2))
+                temp_solid_geometry.append(it.buffer(offset, join_style="mitre"))
         else:
             temp_solid_geometry = geometry
 
@@ -5290,10 +5290,10 @@ class CNCjob(Geometry):
 
         def bounds_rec(obj):
             if type(obj) is list:
-                minx = np.Inf
-                miny = np.Inf
-                maxx = -np.Inf
-                maxy = -np.Inf
+                minx = np.inf
+                miny = np.inf
+                maxx = -np.inf
+                maxy = -np.inf
 
                 for k in obj:
                     if type(k) is dict:
@@ -5357,14 +5357,14 @@ class CNCjob(Geometry):
                 if isinstance(it, LineString):
                     if it.is_ring:
                         it = Polygon(it)
-                temp_solid_geometry.append(it.buffer(offset_for_use, join_style=2))
+                temp_solid_geometry.append(it.buffer(offset_for_use, join_style="mitre"))
 
             for it in flat_ints_geo:
                 # if the geometry is a closed shape then create a Polygon out of it
                 if isinstance(it, (LineString, LinearRing)):
                     if it.is_ring:
                         it = Polygon(it)
-                temp_solid_geometry.append(it.buffer(-offset_for_use, join_style=2))
+                temp_solid_geometry.append(it.buffer(-offset_for_use, join_style="mitre"))
 
             temp_solid_geometry = self.flatten(temp_solid_geometry, reset=True, pathonly=True)
         else:
@@ -7328,10 +7328,10 @@ class CNCjob(Geometry):
 
         def bounds_rec(obj):
             if type(obj) is list:
-                cminx = np.Inf
-                cminy = np.Inf
-                cmaxx = -np.Inf
-                cmaxy = -np.Inf
+                cminx = np.inf
+                cminy = np.inf
+                cmaxx = -np.inf
+                cmaxy = -np.inf
 
                 w_geo = obj.geoms if isinstance(obj, (MultiPolygon, MultiLineString)) else obj
                 for oo in w_geo:
@@ -7361,17 +7361,17 @@ class CNCjob(Geometry):
 
             bounds_coords = bounds_rec(self.solid_geometry)
         else:
-            minx = np.Inf
-            miny = np.Inf
-            maxx = -np.Inf
-            maxy = -np.Inf
+            minx = np.inf
+            miny = np.inf
+            maxx = -np.inf
+            maxy = -np.inf
             # for CNCJob objects made from Gerber or Geometry objects
             if self.obj_options['type'].lower() == 'geometry':
                 for k, v in self.tools.items():
-                    minx = np.Inf
-                    miny = np.Inf
-                    maxx = -np.Inf
-                    maxy = -np.Inf
+                    minx = np.inf
+                    miny = np.inf
+                    maxx = -np.inf
+                    maxy = -np.inf
                     try:
                         work_geo = v['solid_geometry']
                         i_wg = work_geo.geoms if isinstance(work_geo, (MultiPolygon, MultiLineString)) else work_geo
@@ -7394,10 +7394,10 @@ class CNCjob(Geometry):
 
             if self.obj_options['type'].lower() == 'excellon':
                 for k, v in self.tools.items():
-                    minx = np.Inf
-                    miny = np.Inf
-                    maxx = -np.Inf
-                    maxy = -np.Inf
+                    minx = np.inf
+                    miny = np.inf
+                    maxx = -np.inf
+                    maxy = -np.inf
                     try:
                         for geo in v['solid_geometry']:
                             minx_, miny_, maxx_, maxy_ = bounds_rec(geo)
@@ -7861,10 +7861,10 @@ def get_bounds(geometry_list: list) -> list:
     :param geometry_list:   List of geometries for which to calculate the bounds limits
     :return:
     """
-    xmin = np.Inf
-    ymin = np.Inf
-    xmax = -np.Inf
-    ymax = -np.Inf
+    xmin = np.inf
+    ymin = np.inf
+    xmax = -np.inf
+    ymax = -np.inf
 
     for gs in geometry_list:
         try:
